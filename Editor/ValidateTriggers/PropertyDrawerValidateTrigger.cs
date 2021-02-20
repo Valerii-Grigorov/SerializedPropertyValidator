@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 
 [CustomPropertyDrawer(typeof(ValidationAttribute), true)]
-public class ValidationPropertyDrawer : PropertyDrawer {
+public class PropertyDrawerValidateTrigger : PropertyDrawer {
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
 		EditorGUI.BeginChangeCheck();
 		EditorGUI.PropertyField(position, property, label, true);
