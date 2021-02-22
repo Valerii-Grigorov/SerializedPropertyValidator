@@ -3,18 +3,27 @@ using UnityEditor;
 using UnityEngine;
 
 public static class Validator {
-	public static void Validate(SerializedProperty property, FieldInfo fieldInfo, ValidationAttribute validationAttribute) {
+	public static bool Validate(SerializedProperty property, FieldInfo fieldInfo, ValidationAttribute validationAttribute) {
 		var attributeType = validationAttribute.GetType();
 		var validators = ValidatorBox.Validators.FindAll(validator => validator.AttributeType == attributeType);
-		validators.ForEach(validator => validator.Validate(property, fieldInfo, validationAttribute));
+
+		var result = true;
+		foreach ( var validator in validators ) {
+			if ( validator.Validate(property, fieldInfo, validationAttribute) ) {
+				continue;
+			}
+			result = false;
+		}
+		return result;
 	}
 	
-	public static void Validate(Object obj) {
-		Validate(new SerializedObject(obj));
+	public static bool Validate(Object obj) {
+		return Validate(new SerializedObject(obj));
 	}
 
-	static void Validate(SerializedObject serializedObject) {
+	static bool Validate(SerializedObject serializedObject) {
 		var serializedProperty = serializedObject.GetIterator();
+		var result = true;
 		while ( serializedProperty.NextVisible(true) ) {
 			var field = GetFieldInfo(serializedProperty);
 			if ( field == null ) {
@@ -27,9 +36,13 @@ public static class Validator {
 				if ( !(attribute is ValidationAttribute validationAttribute) ) {
 					continue;
 				}
-				Validate(serializedProperty, field, validationAttribute);
+				if ( Validate(serializedProperty, field, validationAttribute) ) {
+					continue;
+				}
+				result = false;
 			}
 		}
+		return result;
 	}
 	
 	static FieldInfo GetFieldInfo(SerializedProperty property) {

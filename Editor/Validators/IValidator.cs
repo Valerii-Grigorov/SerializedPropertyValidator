@@ -5,5 +5,5 @@ using UnityEditor;
 public interface IValidator {
 	Type AttributeType { get; }
 
-	void Validate(SerializedProperty property, FieldInfo fieldInfo, ValidationAttribute attribute);
+	bool Validate(SerializedProperty property, FieldInfo fieldInfo, ValidationAttribute attribute);
 }

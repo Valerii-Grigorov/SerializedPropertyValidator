@@ -6,13 +6,16 @@ using UnityEngine;
 public class ExpectNotNullValidator : IValidator {
 	public Type AttributeType => typeof(ExpectNotNullAttribute);
 
-	public void Validate(SerializedProperty property, FieldInfo fieldInfo, ValidationAttribute attribute) {
+	public bool Validate(SerializedProperty property, FieldInfo fieldInfo, ValidationAttribute attribute) {
 		if ( property.propertyType != SerializedPropertyType.ObjectReference ) {
-			return;
+			return true;
 		}
 
-		if ( !property.objectReferenceValue ) {
-			Debug.LogError($"[{property.serializedObject.targetObject.GetType()}.{property.name}] is null");
+		if ( property.objectReferenceValue ) {
+			return true;
 		}
+
+		Debug.LogError($"[{property.serializedObject.targetObject.GetType()}.{property.name}] is null");
+		return false;
 	}
 }
