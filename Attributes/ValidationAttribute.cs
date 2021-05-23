@@ -1,3 +1,5 @@
 ﻿using UnityEngine;
 
-public abstract class ValidationAttribute : PropertyAttribute { }
+namespace Grigorov.Unity.SerializedPropertyValidator.Attributes {
+	public abstract class ValidationAttribute : PropertyAttribute { }
+}

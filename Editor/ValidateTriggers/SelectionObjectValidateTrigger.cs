@@ -1,24 +1,27 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-public static class SelectionObjectValidateTrigger {
-	[InitializeOnLoadMethod]
-	static void Initialize() {
-		Selection.selectionChanged -= OnSelectionChanged;
-		Selection.selectionChanged += OnSelectionChanged;
-	}
+namespace Grigorov.Unity.SerializedPropertyValidator.Editor.ValidateTriggers {
+	public static class SelectionObjectValidateTrigger {
+		[InitializeOnLoadMethod]
+		static void Initialize() {
+			Selection.selectionChanged -= OnSelectionChanged;
+			Selection.selectionChanged += OnSelectionChanged;
+		}
 
-	static void OnSelectionChanged() {
-		switch (Selection.activeObject) {
-			case GameObject gameObject: {
-				foreach ( var component in gameObject.GetComponentsInChildren<Component>(true) ) {
-					Validator.Validate(component);
+		static void OnSelectionChanged() {
+			switch (Selection.activeObject) {
+				case GameObject gameObject: {
+					var components = gameObject.GetComponentsInChildren<Component>(true);
+					foreach ( var component in components ) {
+						Validator.Validate(component);
+					}
+					break;
 				}
-				break;
-			}
-			case ScriptableObject scriptableObject: {
-				Validator.Validate(scriptableObject);
-				break;
+				case ScriptableObject scriptableObject: {
+					Validator.Validate(scriptableObject);
+					break;
+				}
 			}
 		}
 	}
